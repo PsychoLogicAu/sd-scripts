@@ -951,6 +951,9 @@ class NetworkTrainer:
 
         # resumeする
         train_util.resume_from_local_or_hf_if_specified(accelerator, args)
+        if args.resume and args.reset_optimizer:
+            # reset optimizer state
+            optimizer.state.clear()
 
         # epoch数を計算する
         num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.gradient_accumulation_steps)
@@ -1871,6 +1874,11 @@ def setup_parser() -> argparse.ArgumentParser:
         type=int,
         default=None,
         help="Max number of validation dataset items processed. By default, validation will run the entire validation dataset / 処理される検証データセット項目の最大数。デフォルトでは、検証は検証データセット全体を実行します",
+    )
+    parser.add_argument(
+        "--reset_optimizer",
+        action="store_true",
+        help="Reset the optimizer state on resume",
     )
     return parser
 
