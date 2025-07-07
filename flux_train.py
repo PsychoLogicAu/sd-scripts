@@ -472,6 +472,10 @@ def train(args):
 
     # resumeする
     train_util.resume_from_local_or_hf_if_specified(accelerator, args)
+    if args.resume and args.reset_optimizer:
+        # reset optimizer state
+        logger.info(f"Resetting optimizer state")
+        optimizer.state.clear()
 
     if args.fused_backward_pass:
         # use fused optimizer for backward pass: other optimizers will be supported in the future
